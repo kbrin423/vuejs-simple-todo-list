@@ -1,4 +1,23 @@
 /**
+ * Ce fichier contient nos composants pour gérer notre liste de tâches.
+ * Le but est d'afficher une todo-list fonctionnelle en écrivant
+ * <todo-list></todo-list> dans le fichier index.html
+ *
+ * La todo list a été décomposé entre trois composants :
+ * - Le composant "root" todo-list qui assemble les autres composants
+ *   et qui maintient les données de notre todos.
+ * - Le composant enfant todo-list-form qui affiche le formulaire d'ajout de tâche
+ * - Le composant enfant toto-list-items qui affiche la liste des tâches
+ *
+ * Les composant "enfants" n'agissent pas sur les données de la todo-list,
+ * ils émettent uniquement des évènvements qui permet au parent d'agir
+ * sur l'ensemble des données; pour respecter le paradigme défendu par VueJS :
+ * Un composant ne doit pas modifier l'état d'un autre composant. Les composants
+ * parent font "descendre" les données vers les enfants, et les enfants
+ * font "remonter" si besoin des évènements vers leurs parent.
+ */
+
+/**
  * Composant parent d'affichage de notre todo-list
  */
 Vue.component('todo-list', {
@@ -28,7 +47,7 @@ Vue.component('todo-list', {
   // la méthode addTask() de notre composant
   template:'<div class="todo-list">' +
   '<todo-list-form @addTask="addTask"></todo-list-form>' +
-  '<todo-list-items :tasks="tasks" @deleteTask="deleteTask" @setTaskStatus="setTaskStatus"></todo-list-items>' +
+  '<todo-list-tasks :tasks="tasks" @deleteTask="deleteTask" @setTaskStatus="setTaskStatus"></todo-list-tasks>' +
   '</div>'
 });
 
@@ -60,7 +79,7 @@ Vue.component('todo-list-form', {
  * Liste des taches
  * Emet les évènements "deleteTask" et "setTaskStatus"
  */
-Vue.component('todo-list-items', {
+Vue.component('todo-list-tasks', {
   // on récupère tous les taches
   props:['tasks'],
   data:function() {
@@ -77,9 +96,9 @@ Vue.component('todo-list-items', {
     }
   },
   template: '<ul>' +
-  '<li v-for="(item, index) in tasks">' +
+  '<li v-for="(task, index) in tasks">' +
   '<input type="checkbox" @click="setTaskStatus(index)" :value="index">' +
-  '<span :class="{done:tasks[index].status}">{{item.text}}</span>' +
+  '<span :class="{done:tasks[index].status}">{{task.text}}</span>' +
   '<a class="delete" @click.prevent="deleteTask(index)"> - </a>' +
   '</li>' +
   '</ul>'
